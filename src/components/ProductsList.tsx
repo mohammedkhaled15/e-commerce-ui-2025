@@ -123,7 +123,6 @@ const ProductsList = ({
   category: string;
   params: "homepage" | "products";
 }) => {
-  console.log(`params:${params}`);
   return (
     <div className="w-full">
       <Categories />
