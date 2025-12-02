@@ -23,7 +23,10 @@ const useCartStore = create<CartStoresStateType & CartStoreActionsType>()(
           }
 
           return {
-            cart: [...state.cart, { ...product, quantity: 1 }],
+            cart: [
+              ...state.cart,
+              { ...product, quantity: product.quantity || 1 },
+            ],
           };
         }),
       removeFromCart: (product) =>

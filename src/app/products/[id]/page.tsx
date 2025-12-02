@@ -1,3 +1,4 @@
+import ProductInteraction from "@/components/ProductInteraction";
 import { ProductType } from "@/types";
 import Image from "next/image";
 
@@ -16,6 +17,18 @@ const product: ProductType = {
     purple: "/products/1p.png",
     green: "/products/1gr.png",
   },
+};
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { id: string };
+}) => {
+  // GET THE PRODUCT FROM DB
+  return {
+    title: product.name,
+    describe: product.description,
+  };
 };
 
 const ProductPage = async ({
@@ -39,7 +52,45 @@ const ProductPage = async ({
           className="object-contain rounded-mbd"
         />
       </div>
-      <div className="w-full lg:w-7/12"></div>
+      <div className="w-full lg:w-7/12 flex flex-col gap-4">
+        <h1 className="text-2xl font-medium">{product.name}</h1>
+        <p className="text-gray-500">{product.description}</p>
+        <h2 className="text-2xl font-semibold">${product.price.toFixed(2)}</h2>
+        <ProductInteraction
+          product={product}
+          selectedSize={selectedSize}
+          selectedColor={selectedColor}
+        />
+        <div className="flex items-center gap-2 mt-4">
+          <Image
+            src="/klarna.png"
+            alt="klarna"
+            width={50}
+            height={25}
+            className="rounded-md"
+          />
+          <Image
+            src="/cards.png"
+            alt="cards"
+            width={50}
+            height={25}
+            className="rounded-md"
+          />
+          <Image
+            src="/stripe.png"
+            alt="stripe"
+            width={50}
+            height={25}
+            className="rounded-md"
+          />
+        </div>
+        <p className="text-gray-500 text-xs">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam
+          cupiditate voluptatem labore, sequi dicta facere molestias ipsum quam
+          harum dolorum dolore ratione asperiores fugiat enim delectus,
+          necessitatibus maxime magni tempore!
+        </p>
+      </div>
     </div>
   );
 };
