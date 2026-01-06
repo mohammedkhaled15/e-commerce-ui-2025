@@ -1,4 +1,4 @@
-import { CartStoreActionsType, CartStoresStateType } from "@/types";
+import { CartStoreActionsType, CartStoresStateType } from "@repo/types";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -18,7 +18,8 @@ const useCartStore = create<CartStoresStateType & CartStoreActionsType>()(
 
           if (existingProductIndex !== -1) {
             const updatedCart = [...state.cart];
-            updatedCart[existingProductIndex].quantity += product.quantity || 1;
+            updatedCart[existingProductIndex]!.quantity +=
+              product.quantity || 1;
             return { cart: updatedCart };
           }
 

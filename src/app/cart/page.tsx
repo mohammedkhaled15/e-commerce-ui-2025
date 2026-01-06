@@ -4,11 +4,11 @@ import CartItemsDetails from "@/components/CartItemsDetails";
 import PaymentForm from "@/components/PaymentForm";
 import ShippingForm from "@/components/ShippingForm";
 import useCartStore from "@/stores/cartStore";
-import { CartItemsType, ShippingFormInputs } from "@/types";
-import { ArrowRight, Trash2 } from "lucide-react";
-import Image from "next/image";
+import { ShippingFormInputs } from "@repo/types";
+import { ArrowRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import StripePaymentForm from "../../components/StripePaymentForm";
 
 const steps = [
   {
@@ -25,63 +25,6 @@ const steps = [
   },
 ];
 
-// Temporary
-// export const cartItems: CartItemsType = [
-//   {
-//     id: 1,
-//     name: "Adidas CoreFit T-Shirt",
-//     shortDescription:
-//       "Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.",
-//     description:
-//       "Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.",
-//     price: 39.9,
-//     sizes: ["s", "m", "l", "xl", "xxl"],
-//     colors: ["gray", "purple", "green"],
-//     images: {
-//       gray: "/products/1g.png",
-//       purple: "/products/1p.png",
-//       green: "/products/1gr.png",
-//     },
-//     quantity: 1,
-//     selectedSize: "m",
-//     selectedColor: "gray",
-//   },
-//   {
-//     id: 2,
-//     name: "Puma Ultra Warm Zip",
-//     shortDescription:
-//       "Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.",
-//     description:
-//       "Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.",
-//     price: 59.9,
-//     sizes: ["s", "m", "l", "xl"],
-//     colors: ["gray", "green"],
-//     images: { gray: "/products/2g.png", green: "/products/2gr.png" },
-//     quantity: 2,
-//     selectedSize: "xl",
-//     selectedColor: "gray",
-//   },
-//   {
-//     id: 3,
-//     name: "Nike Air Essentials Pullover",
-//     shortDescription:
-//       "Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.",
-//     description:
-//       "Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.",
-//     price: 69.9,
-//     sizes: ["s", "m", "l"],
-//     colors: ["green", "blue", "black"],
-//     images: {
-//       green: "/products/3gr.png",
-//       blue: "/products/3b.png",
-//       black: "/products/3bl.png",
-//     },
-//     quantity: 1,
-//     selectedSize: "l",
-//     selectedColor: "green",
-//   },
-// ];
-
 const CartPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -89,7 +32,7 @@ const CartPage = () => {
 
   const activeStep = parseInt(searchParams.get("step") || "1");
 
-  const { cart, removeFromCart } = useCartStore();
+  const { cart } = useCartStore();
 
   return (
     <div className="flex flex-col justify-center items-center gap-8 mt-12 ">
@@ -124,13 +67,13 @@ const CartPage = () => {
       {/* STEPS & DETAILS */}
       <div className="w-full flex flex-col lg:flex-row gap-16">
         {/* STEPS */}
-        <div className="w-full lg:w-7/12 shadow-lg border-1 border-gray-100 p-8 rounded-lg flex flex-col gap-8">
+        <div className="w-full lg:w-7/12 shadow-lg border border-gray-100 p-8 rounded-lg flex flex-col gap-8">
           {activeStep === 1 ? (
             <CartItemsDetails />
           ) : activeStep === 2 ? (
             <ShippingForm setShippingForm={setShippingForm} />
           ) : activeStep === 3 && shippingForm ? (
-            <PaymentForm />
+            <StripePaymentForm shippingForm={shippingForm} />
           ) : (
             <p className="text-sm text-gray-500">
               Please Fill the Shipping Form first
@@ -138,14 +81,15 @@ const CartPage = () => {
           )}
         </div>
         {/* DETAILS */}
-        <div className="w-full lg:w-5/12 shadow-lg border-1 border-gray-100 p-8 rounded-lg flex flex-col gap-8 h-max">
+        <div className="w-full lg:w-5/12 shadow-lg border border-gray-100 p-8 rounded-lg flex flex-col gap-8 h-max">
           <h2 className="font-semibold">Cart Details</h2>
           <div className="flex flex-col gap-4">
             <div className="flex justify-between">
               <p className=" text-gray-500">Subtotal</p>
               <p className="font-medium">
                 {cart.reduce(
-                  (acc, item) => acc + item.price * item.quantity,
+                  (acc: number, item: { price: number; quantity: number }) =>
+                    acc + item.price * item.quantity,
                   0
                 )}
               </p>
@@ -163,7 +107,11 @@ const CartPage = () => {
           <div className="flex justify-between">
             <p className=" text-gray-500">Total</p>
             <p className="font-medium">
-              {cart.reduce((acc, item) => acc + item.price * item.quantity, 0)}
+              {cart.reduce(
+                (acc: number, item: { price: number; quantity: number }) =>
+                  acc + item.price * item.quantity,
+                0
+              )}
             </p>
           </div>
           {activeStep === 1 && (

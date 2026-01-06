@@ -1,5 +1,5 @@
 import ProductInteraction from "@/components/ProductInteraction";
-import { ProductType } from "@/types";
+import { ProductType } from "@repo/types";
 import Image from "next/image";
 
 const product: ProductType = {
@@ -17,6 +17,9 @@ const product: ProductType = {
     purple: "/products/1p.png",
     green: "/products/1gr.png",
   },
+  categorySlug: "test",
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
 
 export const generateMetadata = async ({
@@ -44,9 +47,11 @@ const ProductPage = async ({
 
   return (
     <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-12">
-      <div className="w-full lg:w-5/12 relative aspect-[2/3]">
+      <div className="w-full lg:w-5/12 relative aspect-2/3">
         <Image
-          src={product.images[selectedColor]}
+          src={
+            (product.images as Record<string, string>)?.[selectedColor] || ""
+          }
           alt={"Product Image"}
           fill
           className="object-contain rounded-mbd"
